@@ -1,0 +1,9 @@
+{
+  "name": "THE SYSTEM",
+  "short_name": "THE SYSTEM",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#070b0a",
+  "theme_color": "#07100d",
+  "description": "Your real-life progression command centre."
+}

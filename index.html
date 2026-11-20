@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07100d">
+<link rel="manifest" href="manifest.json">
+<title>THE SYSTEM</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#070b0a;color:#eafff0;font-family:Arial,sans-serif;padding:20px}
+header{border-bottom:1px solid #28533b;padding-bottom:18px}
+h1{color:#8cffb5;letter-spacing:3px}
+small,.muted{color:#9aaca2}
+.card{background:#111c17;border:1px solid #28533b;border-radius:14px;padding:18px;margin:15px 0}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.number{font-size:30px;color:#8cffb5;font-weight:bold}
+button{background:#17452d;color:white;border:1px solid #58b77c;border-radius:9px;padding:12px;margin:5px;cursor:pointer}
+nav{display:flex;flex-wrap:wrap;gap:5px;margin:18px 0}
+section{display:none}
+section.active{display:block}
+input{background:#07100d;color:white;border:1px solid #39734f;padding:12px;width:100%;border-radius:8px}
+</style>
+</head>
+<body>
+<header>
+<small>PERSONAL DEVELOPMENT INTERFACE</small>
+<h1>THE SYSTEM</h1>
+<p class="muted">Welcome back, Player.</p>
+</header>
+
+<nav>
+<button onclick="show('home')">Home</button>
+<button onclick="show('quests')">Quests</button>
+<button onclick="show('skills')">Skills</button>
+<button onclick="show('nixo')">Nixo</button>
+<button onclick="show('profile')">Profile</button>
+</nav>
+
+<section id="home" class="active">
+<div class="card">
+<small>PLAYER STATUS</small>
+<div class="stats">
+<div><p>LEVEL</p><div class="number" id="level">1</div></div>
+<div><p>EXPERIENCE</p><div class="number" id="xp">0 XP</div></div>
+</div>
+<p id="rank">RANK: BEGINNER</p>
+</div>
+<div class="card">
+<h3>ACTIVE MISSION</h3>
+<p>Define one important goal for your personal development.</p>
+<button onclick="complete('goal',25)">Complete mission · 25 XP</button>
+</div>
+</section>
+
+<section id="quests">
+<div class="card">
+<h2>QUEST BOARD</h2>
+<p>Learn something useful for 15 minutes.</p>
+<button onclick="complete('learn',15)">Complete · 15 XP</button>
+<p>Take one real step towards your goal.</p>
+<button onclick="complete('action',20)">Complete · 20 XP</button>
+<p>Reflect on your day.</p>
+<button onclick="complete('reflect',10)">Complete · 10 XP</button>
+</div>
+</section>
+
+<section id="skills">
+<div class="card">
+<h2>SKILL TREE</h2>
+<p>● Self-discipline — Unlocked</p>
+<p id="communication">🔒 Communication — 50 XP required</p>
+<p id="thinking">🔒 Critical thinking — 100 XP required</p>
+</div>
+</section>
+
+<section id="nixo">
+<div class="card">
+<h2>NIXO</h2>
+<p>CALM STRATEGIST · COMPANION</p>
+<p id="reply">Player, what would you like to work on today?</p>
+<input id="message" placeholder="Speak to Nixo...">
+<button onclick="talk()">Send message</button>
+<p class="muted">Starter demo: Nixo is not connected to live AI yet.</p>
+</div>
+</section>
+
+<section id="profile">
+<div class="card">
+<h2>PLAYER PROFILE</h2>
+<input id="player" placeholder="Enter player name">
+<button onclick="saveName()">Save name</button>
+<p id="saved"></p>
+</div>
+</section>
+
+<script>
+let data=JSON.parse(localStorage.getItem('systemData')||'{"xp":0,"done":[],"name":""}');
+function save(){localStorage.setItem('systemData',JSON.stringify(data));update()}
+function update(){
+let level=Math.floor(data.xp/100)+1;
+document.getElementById('xp').textContent=data.xp+' XP';
+document.getElementById('level').textContent=level;
+document.getElementById('rank').textContent='RANK: '+(level>=5?'ADVANCED':level>=3?'DEVELOPING':'BEGINNER');
+document.getElementById('communication').textContent=data.xp>=50?'✓ Communication — Unlocked':'🔒 Communication — 50 XP required';
+document.getElementById('thinking').textContent=data.xp>=100?'✓ Critical thinking — Unlocked':'🔒 Critical thinking — 100 XP required';
+}
+function show(id){
+document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+function complete(id,points){
+if(data.done.includes(id)){alert('Quest already completed!');return}
+data.done.push(id);data.xp+=points;save();alert('Quest completed! You earned '+points+' XP.');
+}
+function talk(){
+let message=document.getElementById('message').value.trim();
+if(!message)return;
+document.getElementById('reply').textContent='Nixo: Identify your desired outcome, Player. Then choose one practical action you can take today.';
+document.getElementById('message').value='';
+}
+function saveName(){
+data.name=document.getElementById('player').value.trim();
+save();document.getElementById('saved').textContent='Player profile saved.';
+}
+update();
+</script>
+</body>
+</html>
